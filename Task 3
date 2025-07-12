@@ -1,17 +1,13 @@
 # Build a decision tree classifier to predict whether a customer will purchase a product or service based on their demographic and behavioral data. Use a dataset such as the Bank Marketing dataset from the UCI Machine Learning Repository.
-# Load necessary libraries
 library(rpart)
 library(rpart.plot)
 library(caret)
 
-# Load dataset
 file_path <- file.choose()  # Select the CSV file manually
 data <- read.csv(file_path, sep=";", header=TRUE)
 
-# View dataset structure
 str(data)
 
-# Convert categorical variables to factors
 data$y <- as.factor(data$y) # Target variable (yes/no)
 data$job <- as.factor(data$job)
 data$marital <- as.factor(data$marital)
@@ -23,21 +19,16 @@ data$contact <- as.factor(data$contact)
 data$month <- as.factor(data$month)
 data$poutcome <- as.factor(data$poutcome)  # Removed 'day_of_week' issue
 
-# Split data into training (80%) and testing (20%)
 set.seed(123)
 index <- createDataPartition(data$y, p=0.8, list=FALSE)
 train_data <- data[index,]
 test_data <- data[-index,]
 
-# Train Decision Tree Model
 model <- rpart(y ~ ., data=train_data, method="class", control=rpart.control(cp=0.01))
 
-# Plot the Decision Tree
 rpart.plot(model, type=3, extra=101, main="Decision Tree for Bank Marketing")
 
-# Predictions on test data
 predictions <- predict(model, test_data, type="class")
 
-# Model Evaluation
 conf_matrix <- confusionMatrix(predictions, test_data$y)
 print(conf_matrix)
